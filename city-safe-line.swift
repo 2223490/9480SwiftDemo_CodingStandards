@@ -13,43 +13,43 @@ class Contact {
 }
 
 func saveContactsToFile() {
-    let FILE_NAME = "contacts.txt"
-    let DESKTOP_PATH = FileManager.default.currentDirectoryPath
-    let FILE_PATH = DESKTOP_PATH + "\\" + FILE_NAME
+    let fileName = "contacts.txt"
+    let desktopPath = FileManager.default.currentDirectoryPath
+    let filePath = desktopPath + "\\" + fileName
 
-    var CONTACTS_STRING = ""
+    var contactsString = ""
     for contact in contacts {
-        let CONTACT_INFO = "\(contact.name),\(contact.contactNum.joined(separator: ",")),\(contact.category ?? "")"
-        CONTACTS_STRING.append(CONTACT_INFO + "\n")
+        let contactInfo = "\(contact.name),\(contact.contactNum.joined(separator: ",")),\(contact.category ?? "")"
+        contactsString.append(contactInfo + "\n")
     }
 
     do {
-        try CONTACTS_STRING.write(toFile: FILE_PATH, atomically: false, encoding: .utf8)
+        try contactsString.write(toFile: filePath, atomically: false, encoding: .utf8)
         
     } catch {
-        print("Error saving contacts to \(FILE_NAME): \(error.localizedDescription)")
+        print("Error saving contacts to \(fileName): \(error.localizedDescription)")
     }
 }
 
 func loadContactsFromFile() -> [Contact] {
-    let FILE_NAME = "contacts.txt"
-    let DESKTOP_PATH = FileManager.default.currentDirectoryPath
-    let FILE_PATH = DESKTOP_PATH + "\\" + FILE_NAME
+    let fileName = "contacts.txt"
+    let desktopPath = FileManager.default.currentDirectoryPath
+    let filePath = desktopPath + "\\" + fileName
     
     do {
 
-        let CONTACTS_STRING = try String(contentsOfFile: FILE_PATH, encoding: .utf8)
+        let contactsString = try String(contentsOfFile: filePath, encoding: .utf8)
         
-        let CONTACT_LINES = CONTACTS_STRING.components(separatedBy: "\n")
+        let contactLines = contactsString.components(separatedBy: "\n")
         
         var loadedContacts = [Contact]()
         
-        for line in CONTACT_LINES {
-            let CONTACT_COMPONENTS = line.components(separatedBy: ",")
-            if CONTACT_COMPONENTS.count >= 2 {
-                let name = CONTACT_COMPONENTS[0]
-                let contactNums = CONTACT_COMPONENTS[1].components(separatedBy: ",")
-                let category = CONTACT_COMPONENTS.count > 2 ? CONTACT_COMPONENTS[2] : ""
+        for line in contactLines {
+            let contactComponents = line.components(separatedBy: ",")
+            if contactComponents.count >= 2 {
+                let name = contactComponents[0]
+                let contactNums = contactComponents[1].components(separatedBy: ",")
+                let category = contactComponents.count > 2 ? contactComponents[2] : ""
                 let contact = Contact(name: name, contactNum: contactNums, category: category)
                 loadedContacts.append(contact)
             }
@@ -57,7 +57,7 @@ func loadContactsFromFile() -> [Contact] {
         
         return loadedContacts
     } catch {
-        print("Error loading contacts from \(FILE_NAME): \(error.localizedDescription)")
+        print("Error loading contacts from \(fileName): \(error.localizedDescription)")
         return []
     }
 }
@@ -66,13 +66,13 @@ var contacts: [Contact] = []
 
 print("Welcome To CitySafeLine")
 contacts = loadContactsFromFile()
-let CURRENT_DIRECTORY = FileManager.default.currentDirectoryPath
+let currentDirectory = FileManager.default.currentDirectoryPath
 
-print("Current working directory: \(CURRENT_DIRECTORY)")
+print("Current working directory: \(currentDirectory)")
 while(true){
     print("\n1 View Hotlines\n2 Add Hotline\n3 Update Hotline\n4 Search Hotline\n5 Remove Hotline\n0 Exit")
-    if let INPUT = readLine() {
-        switch(INPUT) {
+    if let input = readLine() {
+        switch(input) {
             case "1":
                 for contact in contacts {
                     print("Name: \(contact.name)")
@@ -81,12 +81,12 @@ while(true){
                 }
             case "2":
                 print("Contact Name: ")
-                if let CONTACT_NAME = readLine() {
+                if let contName = readLine() {
                     print("Contact No.: ")
-                    if let CONTACT_NUMBER = readLine() {
+                    if let contNum = readLine() {
                         print("Contact Category: ")
-                        if let CONTACT_CAT = readLine() {
-                            contacts.append(Contact(name: CONTACT_NAME, contactNum: [CONTACT_NUMBER], category: CONTACT_CAT))
+                        if let contCat = readLine() {
+                            contacts.append(Contact(name: contName, contactNum: [contNum], category: contCat))
                             saveContactsToFile()
                         } else {
                             print("Invalid input for Contact Category.")
@@ -99,15 +99,15 @@ while(true){
                 }
             case "3":
                 print("Enter Contact Name to be updated: ")
-                    if let CON_NAME = readLine() {
+                    if let conName = readLine() {
                         var contactFound = false 
                         
                         for contact in contacts {
-                            if contact.name == CON_NAME {
+                            if contact.name == conName {
                                 print("Enter the new Contact Number: ")
-                                if let NEW_CONT_NUM = readLine() {
+                                if let newContNum = readLine() {
                                     
-                                    contact.contactNum.append(NEW_CONT_NUM)
+                                    contact.contactNum.append(newContNum)
                                     print("Contact Details updated.")
                                     contactFound = true 
                                     break 
@@ -118,24 +118,24 @@ while(true){
                         }
                         
                         if !contactFound {
-                            print("Contact with the name \(CON_NAME) not found.")
+                            print("Contact with the name \(conName) not found.")
                         }
                     }
             case "4":
                 print("Enter the category to search for contacts: ")
-                    if let SEARCH_CATEGORY = readLine() {
+                    if let searchCategory = readLine() {
                         var contactsInCategory = [Contact]()
                         
                         for contact in contacts {
-                            if let CONTACT_CATEGORY = contact.category, CONTACT_CATEGORY.lowercased() == SEARCH_CATEGORY.lowercased() {
+                            if let contactCategory = contact.category, contactCategory.lowercased() == searchCategory.lowercased() {
                                 contactsInCategory.append(contact)
                             }
                         }
                         
                         if contactsInCategory.isEmpty {
-                            print("No contacts found in category: \(SEARCH_CATEGORY)")
+                            print("No contacts found in category: \(searchCategory)")
                         } else {
-                            print("Contacts in category: \(SEARCH_CATEGORY)")
+                            print("Contacts in category: \(searchCategory)")
                             for contact in contactsInCategory {
                                 print("Name: \(contact.name)")
                                 print("Contact Numbers: \(contact.contactNum)")
@@ -144,20 +144,20 @@ while(true){
                     }
             case "5":
                 print("Enter Contact Name to be removed: ")
-                    if let CON_NAME = readLine() {
+                    if let conName = readLine() {
                         var indexToRemove: Int?
                         for (index, contact) in contacts.enumerated() {
-                            if contact.name == CON_NAME {
+                            if contact.name == conName {
                                 indexToRemove = index
                                 break
                             }
                         }
-                        if let INDEX = indexToRemove {
-                            contacts.remove(at: INDEX)
+                        if let index = indexToRemove {
+                            contacts.remove(at: index)
                             saveContactsToFile()
-                            print("\(CON_NAME) has been removed.")
+                            print("\(conName) has been removed.")
                         } else {
-                            print("\(CON_NAME) not found in contacts.")
+                            print("\(conName) not found in contacts.")
                         }
                     }
             case "0":
@@ -166,5 +166,5 @@ while(true){
             default:
                 print("Invalid input, Try again")
         }
-    }
+}
 }
